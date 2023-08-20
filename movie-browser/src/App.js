@@ -5,6 +5,7 @@ import Layout from "./pages/Layout.tsx";
 import Home from "./pages/Home.tsx";
 import Detail from "./pages/Detail.tsx";
 
+
 function App() {
 
   return (
