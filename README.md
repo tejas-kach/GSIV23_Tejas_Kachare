@@ -24,9 +24,13 @@ b. Application Name: Interview
 c. Application URL: None
 d. Application Summary: For a developer interview project
 
-Add the api key to .env file to variable REACT_APP_API_KEY
+Add the API key to .env file to the variable REACT_APP_API_KEY
 Start Dev server: npm run start
 
-This command will compile and bundle your app and start a local development server. 
+This command will compile and bundle your app and start a local development server.
+
+I have implemented the infinite scroll on the list page with some performance-tuning techniques which improve the user experience and used redux toolkit for global state management.
+
+If given additional time, I would have used Image Loading Optimization and Scroll Rendering Performance Techniques to increase the performance, I would have implemented SSR using react, written some react test cases and I would have improved the CSS and error handling mechanisms.
 
 
