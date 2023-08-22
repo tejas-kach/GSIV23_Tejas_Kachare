@@ -1,72 +1,96 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import { Box, Card, CardMedia, Typography } from "@mui/material";
-import { getMovieCredit } from "../api/moviedb-api";
+import {
+  Box,
+  CardMedia,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { getMovieCredit, getMovieDetails } from "../api/moviedb-api.ts";
 
 const Detail = () => {
   const [movieDetail, setMovieDetail] = useState({});
   const [movieCredit, setMovieCredit] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const release = new Date(movieDetail?.release_date ?? "").getFullYear();
+  const movieTime = movieDetail?.runtime;
+  const director = movieCredit?.crew?.find((per) => per?.job === "Director");
+  const cast = movieCredit?.crew?.map((c) => c?.name);
+
   const { id } = useParams() || 0;
-  console.log("detaailllllslsls", id);
-  const options = {
-    headers: {
-      accept: "application/json",
-      Authorization: process.env.REACT_APP_API_KEY,
-    },
-  };
-  const fetchApi = async (url: string) => {
-    const response = await axios.get(url, options);
-    return response;
-  };
-  const api = async () => {
-    const url = `https://api.themoviedb.org/3/movie/${id}?language=en-US`;
-    const [response, credit] = await Promise.all([
-      fetchApi(url),
-      getMovieCredit(id),
-    ]);
-    console.log("response", response, " credit", credit);
-    setMovieDetail({ ...response.data });
-    setMovieCredit({ ...credit.data });
+
+  const movieDetailApi = async () => {
+    try {
+      const [response, credit] = await Promise.all([
+        getMovieDetails(id),
+        getMovieCredit(id),
+      ]);
+      setMovieDetail({ ...response.data });
+      setMovieCredit({ ...credit.data });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setError(error?.message || "Something went wrong");
+    }
   };
   useEffect(() => {
-    api();
+    movieDetailApi();
   }, []);
   return (
-    <Card
-      sx={{
-        display: "flex",
-        gap: 4,
-        padding: "20px",
-        flexWrap: { xs: "wrap", lg: "nowrap" },
-      }}
-    >
-      <Box>
-        <CardMedia
-          component="img"
-          sx={{ width: "100%", minWidth: 200, maxHeight: 300 }}
-          image={
-            movieDetail?.poster_path
-              ? `https://image.tmdb.org/t/p/original/${movieDetail?.poster_path}`
-              : `https://placehold.co/500`
-          }
-        />
-      </Box>
-      <Box>
-        <Typography gutterBottom variant="h5" component="h5">
-          {movieDetail?.title} ({movieDetail?.popularity})
+    <>
+      {!loading && error && (
+        <Typography sx={{textAlign:"center"}} gutterBottom variant="h5" component="h5">
+          {error}
         </Typography>
-        {/* <Typography gutterBottom variant="body1" component="p">
-          {releaseYear} | {formatedTime} | {director?.name}
-        </Typography> */}
-        {/* <Typography gutterBottom variant="body1" component="p">
-          Cast: {cast?.toString()}
-        </Typography> */}
-        <Typography gutterBottom variant="body1" component="p">
-          Description: {movieDetail?.overview}
-        </Typography>
-      </Box>
-    </Card>
+      )}
+      {loading && (
+        <Stack alignItems="center" mt={5}>
+          <CircularProgress />
+        </Stack>
+      )}
+      {!loading && movieDetail && !error && (
+        <Box
+          sx={{
+            display: "flex",
+            gap: 4,
+            padding: "20px",
+            flexWrap: { xs: "wrap", lg: "nowrap" },
+          }}
+        >
+          <Box>
+            <CardMedia
+              component="img"
+              sx={{ width: "100%", minWidth: 240, maxHeight: 340 }}
+              image={
+                movieDetail?.poster_path
+                  ? `https://image.tmdb.org/t/p/original/${movieDetail?.poster_path}`
+                  : `https://placehold.co/500`
+              }
+            />
+          </Box>
+          <Box>
+            <Typography gutterBottom variant="h4" component="h4">
+              {movieDetail?.title} ({movieDetail?.popularity})
+            </Typography>
+            {movieCredit && (
+              <>
+                <Typography gutterBottom variant="body2" component="p">
+                  {release} | {`${movieTime} min`} | {director?.name}
+                </Typography>
+                <Typography gutterBottom variant="body2" component="p" className="movie-detail-ellipse">
+                  Cast: {cast?.toString()}
+                </Typography>
+              </>
+            )}
+            <Typography gutterBottom variant="body2" component="p">
+              Description: {movieDetail?.overview}
+            </Typography>
+          </Box>
+        </Box>
+      )}
+    </>
   );
 };
 
