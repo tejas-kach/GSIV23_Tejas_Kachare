@@ -7,11 +7,14 @@ import MovieCard from "../components/MovieCard.tsx";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { useAppSelector, useAppDispatch } from "../hooks/hooks.ts";
-import { intialMovieList, updateMovieList, setSearchList } from "../slice/movie-slice.ts";
+import {
+  intialMovieList,
+  updateMovieList,
+  setSearchList,
+} from "../slice/movie-slice.ts";
 import { getMovieList, getSearchMovieList } from "../api/moviedb-api.ts";
-import CircularProgress from '@mui/material/CircularProgress';
-
-
+import CircularProgress from "@mui/material/CircularProgress";
+import { Stack } from "@mui/material";
 
 const Home = () => {
   const movie = useAppSelector((state) => state.moviesState.movieList);
@@ -35,18 +38,18 @@ const Home = () => {
       listData: {
         page,
         total: response?.data?.total_results,
-        search: ''
-      }
-    }
-    if(page===1){
-      dispatch(intialMovieList(movieData))
-    }else{
+        search: "",
+      },
+    };
+    if (page === 1) {
+      dispatch(intialMovieList(movieData));
+    } else {
       dispatch(updateMovieList(movieData));
     }
   };
 
   const searchApi = async (page, search) => {
-    const response = await getSearchMovieList(page,search);
+    const response = await getSearchMovieList(page, search);
     const movies = response?.data?.results;
     console.log("hii2", response.data);
     const movieData = {
@@ -54,53 +57,49 @@ const Home = () => {
       listData: {
         page,
         total: response?.data?.total_results,
-        search
-      }
-    }
-      dispatch(updateMovieList(movieData));
-
+        search,
+      },
+    };
+    dispatch(updateMovieList(movieData));
   };
   const fetchData = () => {
-    console.log("fet",searchList,movieData)
+    console.log("fet", searchList, movieData);
     if (searchList) {
       searchApi(movieData.page + 1, movieData.search);
     } else {
       fetch(movieData.page + 1);
     }
   };
-  
-  
 
   useEffect(() => {
     fetch(1);
     console.log("useeffect");
   }, []);
- 
+
   return (
     <>
-      
       <div className="content">
-        {console.log("movie",movie,movieData)}
+        {console.log("movie", movie, movieData)}
         {movie && (
           <InfiniteScroll
             dataLength={movie?.length} //This is important field to render the next data
             next={fetchData}
             hasMore={movie?.length < movieData.total}
-            loader={<h4>Loading...</h4>}
+            loader={
+              <h4>
+                <Stack alignItems="center" mt={5}>
+                  <CircularProgress />
+                </Stack>
+              </h4>
+            }
             endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>Yay! You have seen it all</b>
+              <p style={{ textAlign: "center", padding: "20px" }}>
+                <b>End of List</b>
               </p>
             }
-
           >
             <Box sx={{ flexGrow: 1 }}>
-              <Grid
-                container
-                spacing={2}
-                // spacing={{ xs: 2, md: 3 }}
-                // columns={{ xs: 4, sm: 8, md: 12 }}
-              >
+              <Grid container spacing={2}>
                 {movie.map((_, index) => (
                   <Grid item xs={4} sm={4} md={2} key={index}>
                     <MovieCard
