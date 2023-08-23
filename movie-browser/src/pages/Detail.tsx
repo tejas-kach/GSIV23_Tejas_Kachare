@@ -72,7 +72,7 @@ const Detail = () => {
           </Box>
           <Box>
             <Typography gutterBottom variant="h4" component="h4">
-              {movieDetail?.title} ({movieDetail?.popularity})
+              {movieDetail?.title} <span style={{fontSize: "1.5rem"}}>({Math.round(movieDetail?.vote_average || 0)})</span>
             </Typography>
             {movieCredit && (
               <>
