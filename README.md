@@ -1,7 +1,5 @@
 # GSIV23_Tejas_Kachare
 
-Live Demo: https://gsiv-23-tejas-kachare-9k4q.vercel.app/
-
 Prerequisites
 Before you begin, ensure that you have the following software installed on your machine:
 
@@ -29,8 +27,16 @@ Start Dev server: npm run start
 
 This command will compile and bundle your app and start a local development server.
 
-I have implemented the infinite scroll on the list page with some performance-tuning techniques which improve the user experience and used redux toolkit for global state management.
+Implemented Elements
+1. Infinite Scroll- I have implemented the infinite scroll on the list page with some performance-tuning techniques which       improve the user experience.
+2. API Integration
+3. Global State Management using Redux Toolkit.
+4. Routing and Navigation--The app implements routing and navigation using React Router. It ensures smooth navigation           between different views and maintains consistent URLs.
 
-If given additional time, I would have used Image Loading Optimization and Scroll Rendering Performance Techniques to increase the performance, I would have implemented SSR using react, written some react test cases and I would have improved the CSS and error handling mechanisms.
+If given additional time,
+1. I would have used Image Loading Optimization and Scroll Rendering Performance Techniques to increase the performance for     rendering images optimally.
+2. I would have implemented SSR using React or learned Remix and written some unit test cases.
+3. I would have improved the CSS and error-handling mechanisms.
+4. I would have added some more features to the app.
 
 
